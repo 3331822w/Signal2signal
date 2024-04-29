@@ -56,13 +56,9 @@ class U_Net(nn.Module):
         self.Conv4 = conv_block(filters[2], filters[3])
         self.Conv5 = conv_block(filters[3], filters[4])
 
-        # self.Conv6 = conv_block(filters[4], filters[5])
-        # self.Up6 = up_conv(filters[5], filters[4], sizes[4])
-        # self.Up_conv6 = conv_block(filters[5], filters[4])
-
         self.Up5 = up_conv(filters[4], filters[3], sizes[3])
         self.Up_conv5 = conv_block(filters[4], filters[3])
-        #
+        
         self.Up4 = up_conv(filters[3], filters[2], sizes[2])
         self.Up_conv4 = conv_block(filters[3], filters[2])
 
@@ -92,56 +88,19 @@ class U_Net(nn.Module):
         e4 = self.Maxpool3(e3)
         e4 = self.Conv4(e4)
 
-
-        # e5 = self.Maxpool4(e4)
-        # e5 = self.Conv5(e5)
-
-        # e6 = self.Maxpool5(e5)
-        # e6 = self.Conv6(e6)
-        # print(e1.shape)
-        # print(e2.shape)
-        # print(e3.shape)
-        # # print(e4.shape)
-        # print(e5.shape)
-
-        # d6 = self.Up6(e6)
-        # # # d5 = nn.functional.interpolate(d5, size=e4.shape[2:4])
-        # d6 = torch.cat((e5, d6), dim=1)
-        # d6 = self.Up_conv6(d6)
-        # d6 = self.dropout(d6)
-
-        # d5 = self.Up5(e5)#e5/d6
-        # # # d5 = nn.functional.interpolate(d5, size=e4.shape[2:4])
-        # d5 = torch.cat((e4, d5), dim=1)
-        # d5 = self.Up_conv5(d5)
-        # d5 = self.dropout(d5)
-
         d4 = self.Up4(e4)#e4/d5
-        # d4 = nn.functional.interpolate(d4, size=e3.shape[2:4])
         d4 = torch.cat((e3, d4), dim=1)
         d4 = self.Up_conv4(d4)
-        # d4 = self.dropout(d4)
 
         d3 = self.Up3(d4)
-        # d3 = nn.functional.interpolate(d3, size=e2.shape[2:4])
         d3 = torch.cat((e2, d3), dim=1)
         d3 = self.Up_conv3(d3)
-        # d3 = self.dropout(d3)
-        #
+
         d2 = self.Up2(d3)
-        # d2 = nn.functional.interpolate(d2, size=e1.shape[2:4])
         d2 = torch.cat((e1, d2), dim=1)
         d2 = self.Up_conv2(d2)
-        # d2 = self.dropout(d2)
-        # #
-        # print(d2.shape)
-        # # print(d3.shape)
-        # # print(d4.shape)
-        # # print(d5.shape)
 
         out = self.Conv(d2)
-
-        # d1 = self.active(out)
 
         return out
 
