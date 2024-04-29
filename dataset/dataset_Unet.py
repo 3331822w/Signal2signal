@@ -27,7 +27,7 @@ def weight_result(data,c):
     new_data= [0 for x in range(n)]
     for i in range(0,n):
         w_sum=0
-        if i <= m - 1:#左端不完整的几个点
+        if i <= m - 1:
             lx = 0
             ly = i + m
             p_sum=0
@@ -118,7 +118,6 @@ def f_1(x, A, B):
 def random_transform(data, size):
     data = data.T
     data = np.flipud(data)
-    # target_sum = []
     wave = data[:, :1]
     wave = np.squeeze(wave)
     image = data[:, 1:]
@@ -131,35 +130,13 @@ def random_transform(data, size):
     target_sum = []
     for i in range(size):
         target_sum.append(random.sample(list(target[0 + i * (len(target) // size):(i + 1) * (len(target) // size)]), 1))
-    # for i in range(size):
-    #     target_sum.append(random.sample(list(target[0+i*(len(target)//size):(i+1)*(len(target)//size)]), 1))
-    # target_sum = random.sample(list(target), 5)
-    #values1=每一个点都随机选位置，values2=每一张图都选的同一位置
     for i in range(1, np.shape(data)[1]):
         values2 = []
         values = image[:, i - 1:i]
         values = np.squeeze(values)
-        # wave1 = wave[start:end]
-        # values1 = values[start:end]
-        ############局部扣除背景#####################
-        # X0 = []
-        # X0.append(wave[start])
-        # X0.append(wave[end])
-        # Y0 = []
-        # Y0.append(values[start])
-        # Y0.append(values[end])
-        # A1, B1 = optimize.curve_fit(f_1, X0, Y0)[0]
-        # values_line = A1 * wave1 + B1
-        # nonback = values1 - values_line
-        #    plt.plot(wave1,values1,color='r')
-        #    plt.plot(wave1,values_line,color='g')
-        #    plt.plot(wave1,nonback,color='b')
-        #    plt.show()
-        ##########随机选取峰的部分点加和进行成像###################
-        # nonback = random.sample(list(values1), size)
         for m in target_sum:
             values2.append(values[m])
-        peak_intensity = sum(values2)  # 取峰面积的范围，如果是峰强则用max
+        peak_intensity = sum(values2)  # peak area
         img.append(peak_intensity)
     for i in range(5):
         img = normalization(img)
@@ -167,26 +144,19 @@ def random_transform(data, size):
         index_min = np.argmin(img)
         img[index_max] = weight_result(img, 3)[index_max]
         img[index_min] = weight_result(img, 3)[index_min]
-    # img = abs(img-1)
     img = normalization(img)
     img = np.array(img).reshape((int(len(img) / row)), row)
-    # print(img.shape)
-    # img = ndimage.median_filter(img, (5, 5))
-    # print(img.shape)
     return img
 
 class dataload(data.Dataset):
 
-    def __init__(self, root, nanophoto_img, transforms=None, train=True, test=False,):#输出所有文件的具体路径
-        """
-        主要目标： 获取所有图片的地址，并根据训练，验证，测试划分数据
-        """
+    def __init__(self, root, nanophoto_img, transforms=None, train=True, test=False,):
         self.test = test
         self.transforms = transforms
         self.nanophoto_img = nanophoto_img
-        if os.listdir(root)[0].endswith(".txt"):#文件中无子文件夹，图片tif，文本txt
+        if os.listdir(root)[0].endswith(".txt"):#txt data type
             imgs = [os.path.join(root, img) for img in os.listdir(root)]
-        else:#文件中有子文件夹
+        else:
             imgs=[]
             dirs = [os.path.join(root, dirs) for dirs in os.listdir(root)]
             for l in dirs:
@@ -195,24 +165,11 @@ class dataload(data.Dataset):
             imgs[k] = imgs[k].replace('\\','/')
         self.imgs = imgs
 
-    def __getitem__(self, index):#给每个文件打标签并且读取
-        """
-        一次返回一张图片的数据
-        """
-        # img_path = self.imgs[index]
-        # img = np.loadtxt(img_path, skiprows=0)
+    def __getitem__(self, index):
         img = self.nanophoto_img
-        # img = np.array(img)
-        # img = img / 1.0
         data = random_transform(img, 20)
         target = random_transform(img, 20)
-        # print(data.shape)
-        # sim = ssim(data, target, multichannel=True)
-        # while sim < 0.3:
-        #     data = random_transform(img, 5)
-        #     target = random_transform(img, 5)
-        #     sim = ssim(data, target, multichannel=True)
-        #################成个像看看###################
+        #################try###################
         # plt.matshow(data, cmap=plt.cm.jet)  # 这里设置颜色为红色，也可以设置其他颜色
         # plt.title('Raman image before denoising')
         # plt.show()
