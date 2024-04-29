@@ -170,10 +170,10 @@ class dataload(data.Dataset):
         data = random_transform(img, 20)
         target = random_transform(img, 20)
         #################try###################
-        # plt.matshow(data, cmap=plt.cm.jet)  # 这里设置颜色为红色，也可以设置其他颜色
+        # plt.matshow(data, cmap=plt.cm.jet)  # color
         # plt.title('Raman image before denoising')
         # plt.show()
-        # plt.matshow(target, cmap=plt.cm.jet)  # 这里设置颜色为红色，也可以设置其他颜色
+        # plt.matshow(target, cmap=plt.cm.jet)  # color
         # plt.title('Raman image after denoising')
         # plt.show()
         return data, target
