@@ -41,7 +41,7 @@ class U_Net(nn.Module):
 
         n1 = 16
         filters = [n1, n1 * 2, n1 * 4, n1 * 8, n1 * 16, n1 * 32]
-        sizes = [[1904, 1639], [1904//2, 1639//2], [1904//4, 1639//4], [1904//8, 1639//8], [1904//16, 1639//16]]
+        sizes = [[34, 50], [34//2, 50//2], [34//4, 50//4], [34//8, 50//8], [34//16, 50//16]]
         self.Maxpool1 = nn.MaxPool2d(kernel_size=2, stride=2)
         self.Maxpool2 = nn.MaxPool2d(kernel_size=2, stride=2)
         self.Maxpool3 = nn.MaxPool2d(kernel_size=2, stride=2)
